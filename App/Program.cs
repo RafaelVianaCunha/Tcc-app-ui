@@ -17,6 +17,8 @@ namespace App
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
+            
+            var stopLimit = new StopLimit();
 
             Configuration = builder.Build();
 
@@ -43,9 +45,11 @@ namespace App
                         break;
                     case 2:
                         Console.WriteLine("Cadastrando stop-limit ...");
+                        await CreateStopLimit(stopLimit);
                         break;
                     case 3:
                         Console.WriteLine("Removendo stop-limit ...");
+                        await DeleteStopLimit(stopLimit);
                         break;
                     case 4:
                         Console.WriteLine("Carregando ...");
@@ -82,5 +86,42 @@ namespace App
 
             Console.WriteLine("\n Credenciais criadas com sucesso!");
         }
+
+        private static async Task CreateStopLimit(StopLimit stopLimit)
+        {
+            var cryptoOrderApiClient = new CryptoOrderApiClient(
+                new HttpClient(),
+                Configuration.GetValue<string>("CryptoOrderApiUrl")
+            );
+
+            stopLimit.UserID = Configuration.GetValue<Guid>("UserId");
+
+            Console.WriteLine("\nDigite o Stop: ");
+            stopLimit.Stop = Console.ReadLine();
+
+            Console.WriteLine("\nDigite o Limit:");
+            stopLimit.Limit = Console.ReadLine();
+
+            Console.WriteLine("\nDigite a Quantidade :");
+            stopLimit.Quantity = Console.ReadLine();
+
+            await cryptoOrderApiClient.CreateStopLimit(exchangeCredential);
+
+            Console.WriteLine("\n Stop/Limit criados com sucesso!");
+        }
+
+        
+        private static async Task DeleteStopLimit(StopLimit stopLimit)
+        {
+            var cryptoOrderApiClient = new CryptoOrderApiClient(
+                new HttpClient(),
+                Configuration.GetValue<string>("CryptoOrderApiUrl")
+            );
+
+            await cryptoOrderApiClient.DeleteStopLimit(stopLimit);
+
+            Console.WriteLine("\n Stop/Limit deletado com sucesso!");
+        }
     }
+
 }
