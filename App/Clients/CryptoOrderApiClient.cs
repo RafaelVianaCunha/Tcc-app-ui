@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace App.Clients
             }
 
             HttpClient = httpClient ?? throw new System.ArgumentNullException(nameof(httpClient));
-            cryptoOrderApi = cryptoOrderApi;
+            
         }
 
         public async Task<StopLimit> CreateStopLimit(StopLimit model)
@@ -45,11 +46,9 @@ namespace App.Clients
         {
             var json = JsonConvert.SerializeObject(model);
             
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var url = $"{cryptoOrderApi}/stop-limits/{model.Id}";
 
-            var url = $"{cryptoOrderApi}/stop-limits/{moodel.Id}";
-
-            var httpResponse = await HttpClient.DeleteAsync(url, data);
+            var httpResponse = await HttpClient.DeleteAsync(url);
 
             httpResponse.EnsureSuccessStatusCode();
 
@@ -58,7 +57,7 @@ namespace App.Clients
             return JsonConvert.DeserializeObject<StopLimit>(response);
         }
 
-        public async Task<StopLimit> GetAllStopLimits(StopLimit model)
+        public async Task<IReadOnlyCollection<SaleOrder>> GetAllStopLimits()
         {
             var url = $"{cryptoOrderApi}/saleorder";
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace App
                         break;
                     case 4:
                         Console.WriteLine("Carregando ...");
-                        await GetAllStopLimits(stopLimit);
+                        await GetAllStopLimits();
                         break;
                     case 5:
                         Console.WriteLine("Até breve!");
@@ -97,15 +98,15 @@ namespace App
             stopLimit.UserID = Configuration.GetValue<Guid>("UserId");
 
             Console.WriteLine("\nDigite o Stop: ");
-            stopLimit.Stop = Console.ReadLine();
+            stopLimit.Stop = Convert.ToDecimal(Console.ReadLine());
 
             Console.WriteLine("\nDigite o Limit:");
-            stopLimit.Limit = Console.ReadLine();
+            stopLimit.Limit = Convert.ToDecimal(Console.ReadLine());
 
             Console.WriteLine("\nDigite a Quantidade :");
-            stopLimit.Quantity = Console.ReadLine();
+            stopLimit.Quantity = Convert.ToInt16(Console.ReadLine());
 
-            await cryptoOrderApiClient.CreateStopLimit(exchangeCredential);
+            await cryptoOrderApiClient.CreateStopLimit(stopLimit);
 
             Console.WriteLine("\n Stop/Limit criados com sucesso!");
         }
