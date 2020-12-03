@@ -9,7 +9,7 @@ namespace App.Clients
 {
     public class CryptoOrderApiClient
     {
-        public string cryptoOrderApi { get; }
+        public string CryptoOrderApi { get; }
         
         public HttpClient HttpClient { get; }
 
@@ -21,7 +21,7 @@ namespace App.Clients
             }
 
             HttpClient = httpClient ?? throw new System.ArgumentNullException(nameof(httpClient));
-            
+            CryptoOrderApi = cryptoOrderApi;
         }
 
         public async Task<StopLimit> CreateStopLimit(StopLimit model)
@@ -30,7 +30,7 @@ namespace App.Clients
             
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var url = $"{cryptoOrderApi}/stop-limits";
+            var url = $"{CryptoOrderApi}/stop-limits";
 
             var httpResponse = await HttpClient.PostAsync(url, data);
 
@@ -46,7 +46,7 @@ namespace App.Clients
         {
             var json = JsonConvert.SerializeObject(model);
             
-            var url = $"{cryptoOrderApi}/stop-limits/{model.Id}";
+            var url = $"{CryptoOrderApi}/stop-limits/{model.Id}";
 
             var httpResponse = await HttpClient.DeleteAsync(url);
 
@@ -59,7 +59,7 @@ namespace App.Clients
 
         public async Task<IReadOnlyCollection<SaleOrder>> GetAllStopLimits()
         {
-            var url = $"{cryptoOrderApi}/saleorder";
+            var url = $"{CryptoOrderApi}/saleorder";
 
             var httpResponse = await HttpClient.GetAsync(url);
 
