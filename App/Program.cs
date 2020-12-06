@@ -19,14 +19,12 @@ namespace App
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
             
-            var stopLimit = new StopLimit();
+           
 
             Configuration = builder.Build();
 
             Console.WriteLine("Bem-vindo ao Sistema de Monitoramento em Tempo Real de Exchanges para Evitar Violinadas\n");
-
             var option = 0;
-
             while (option != 5)
             {
                 Console.WriteLine("\n1 - Cadastrar Credenciais");
@@ -45,11 +43,11 @@ namespace App
                         break;
                     case 2:
                         Console.WriteLine("Cadastrando stop-limit ...");
-                        await CreateStopLimit(stopLimit);
+                        await CreateStopLimit();
                         break;
                     case 3:
                         Console.WriteLine("Removendo stop-limit ...");
-                        await DeleteStopLimit(stopLimit);
+                        await DeleteStopLimit();
                         break;
                     case 4:
                         Console.WriteLine("Carregando ...");
@@ -88,8 +86,9 @@ namespace App
             Console.WriteLine("\n Credenciais criadas com sucesso!");
         }
 
-        private static async Task CreateStopLimit(StopLimit stopLimit)
+        private static async Task CreateStopLimit()
         {
+            var stopLimit = new StopLimit();
             var cryptoOrderApiClient = new CryptoOrderApiClient(
                 new HttpClient(),
                 Configuration.GetValue<string>("CryptoOrderApiUrl")
@@ -112,14 +111,15 @@ namespace App
         }
 
         
-        private static async Task DeleteStopLimit(StopLimit stopLimit)
+        private static async Task DeleteStopLimit()
         {
+            
             var cryptoOrderApiClient = new CryptoOrderApiClient(
                 new HttpClient(),
                 Configuration.GetValue<string>("CryptoOrderApiUrl")
             );
 
-            await cryptoOrderApiClient.DeleteStopLimit(stopLimit);
+            await cryptoOrderApiClient.DeleteStopLimit();
 
             Console.WriteLine("\n Stop/Limit deletado com sucesso!");
         }
@@ -131,8 +131,16 @@ namespace App
                 Configuration.GetValue<string>("CryptoOrderApiUrl")
             );
 
-            var salesOrders = await cryptoOrderApiClient.GetAllStopLimits();
-
+            var stopLimits = await cryptoOrderApiClient.GetAllStopLimits();
+           
+            foreach(var s in stopLimits){
+                Console.WriteLine("Id: "+ s.Id);
+                Console.WriteLine("Stop: "+ s.Stop);
+                Console.WriteLine("Limit: "+ s.Limit);
+                Console.WriteLine("Data de criação: "+ s.CreatedAt);
+                
+                Console.WriteLine();
+            }
         }
 
         

@@ -4,6 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using App.Models;
 using Newtonsoft.Json;
+using System.Net;
+
 
 namespace App.Clients
 {
@@ -41,6 +43,18 @@ namespace App.Clients
             return JsonConvert.DeserializeObject<StopLimit>(response);
         }
 
+        public async Task<StopLimit> DeleteStopLimit()
+        {
+            var url = $"{CryptoOrderApi}/stop-limits/";
+            var httpResponse = await HttpClient.DeleteAsync(url);   
+            try{
+                httpResponse.EnsureSuccessStatusCode();
+                var response = await httpResponse.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<StopLimit>(response);
+            }catch(HttpRequestException ex){
+                return null;
+            }
+        }
         
         public async Task<StopLimit> DeleteStopLimit(StopLimit model)
         {
@@ -49,7 +63,7 @@ namespace App.Clients
             var url = $"{CryptoOrderApi}/stop-limits/{model.Id}";
 
             var httpResponse = await HttpClient.DeleteAsync(url);
-
+            
             httpResponse.EnsureSuccessStatusCode();
 
             var response = await httpResponse.Content.ReadAsStringAsync();
@@ -57,9 +71,9 @@ namespace App.Clients
             return JsonConvert.DeserializeObject<StopLimit>(response);
         }
 
-        public async Task<IReadOnlyCollection<SaleOrder>> GetAllStopLimits()
+        public async Task<IReadOnlyCollection<StopLimit>> GetAllStopLimits()
         {
-            var url = $"{CryptoOrderApi}/saleorder";
+            var url = $"{CryptoOrderApi}/stop-limits";
 
             var httpResponse = await HttpClient.GetAsync(url);
 
@@ -67,7 +81,7 @@ namespace App.Clients
 
             var response = await httpResponse.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<IReadOnlyCollection<SaleOrder>>(response);
+            return JsonConvert.DeserializeObject<IReadOnlyCollection<StopLimit>>(response);
         }
 
     }
