@@ -132,7 +132,11 @@ namespace App
             );
 
             var stopLimits = await cryptoOrderApiClient.GetAllStopLimits();
-           
+            
+            if(stopLimits == null || stopLimits.Count == 0){
+                Console.WriteLine("Não tem stop cadastrado");
+            }
+
             foreach(var s in stopLimits){
                 Console.WriteLine("Id: "+ s.Id);
                 Console.WriteLine("Stop: "+ s.Stop);

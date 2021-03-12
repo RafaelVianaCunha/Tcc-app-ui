@@ -50,7 +50,7 @@ namespace App.Clients
             try{
                 httpResponse.EnsureSuccessStatusCode();
                 var response = await httpResponse.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<StopLimit>(response);
+                return null;
             }catch(HttpRequestException ex){
                 return null;
             }
